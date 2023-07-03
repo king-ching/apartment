@@ -30,8 +30,10 @@ module Apartment
       next if ARGV.any? { |arg| arg =~ /\Aassets:(?:precompile|clean)\z/ }
 
       begin
-        Apartment.connection_class.connection_pool.with_connection do
-          Apartment::Tenant.init
+        unless ENV['SKIP_AUTO_LINK']
+          Apartment.connection_class.connection_pool.with_connection do
+            Apartment::Tenant.init
+          end
         end
       rescue ::ActiveRecord::NoDatabaseError
         # Since `db:create` and other tasks invoke this block from Rails 5.2.0,
