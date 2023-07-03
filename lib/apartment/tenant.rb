@@ -24,7 +24,11 @@ module Apartment
     #
     def adapter
       Thread.current[:apartment_adapter] ||= begin
-        adapter_method = "#{config[:adapter]}_adapter"
+        adapter_method = if config[:adapter].include?('makara')
+                           'postgresql_adapter'
+                         else
+                           "#{config[:adapter]}_adapter"
+                         end
 
         if defined?(JRUBY_VERSION)
           if config[:adapter] =~ /mysql/
